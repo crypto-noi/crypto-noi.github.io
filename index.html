@@ -19,65 +19,90 @@
        1. HERO
        ========================================================= -->
   <header class="hero" id="hero">
-    <video
-      class="hero__video"
-      autoplay
-      loop
-      muted
-      playsinline
-      preload="auto"
-      aria-hidden="true"
-      tabindex="-1"
-      disablepictureinpicture
-      disableremoteplayback
-    >
-      <source src="https://res.cloudinary.com/dga9qc4at/video/upload/v1776362807/IMG_2369_sdkiz2.mp4" type="video/mp4" />
-    </video>
-    <div class="hero__overlay" aria-hidden="true"></div>
+    <div class="hero__bg" aria-hidden="true">
+      <div class="hero__grid"></div>
+      <div class="hero__orb hero__orb--purple"></div>
+      <div class="hero__orb hero__orb--neon"></div>
+    </div>
 
     <nav class="nav">
-      <a class="nav__logo" href="#hero">
-        <span class="nav__logo-mark">◆</span>
-        <span>Крипто Ной</span>
+      <a class="nav__logo" href="#hero" aria-label="Крипто Ной — на главную">
+        <svg class="nav__logo-mark" viewBox="0 0 36 36" aria-hidden="true">
+          <defs>
+            <linearGradient id="logoGrad" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="#a855f7" />
+              <stop offset="100%" stop-color="#39ff88" />
+            </linearGradient>
+          </defs>
+          <rect x="1.5" y="1.5" width="33" height="33" rx="9" fill="none" stroke="url(#logoGrad)" stroke-width="1.4"/>
+          <!-- candle wicks/bodies forming an uptrend -->
+          <line x1="8.5" y1="22" x2="8.5" y2="27" stroke="#39ff88" stroke-width="1.2" stroke-linecap="round"/>
+          <rect x="7" y="19" width="3" height="5" rx="0.8" fill="#39ff88"/>
+          <line x1="15.5" y1="14" x2="15.5" y2="24" stroke="#39ff88" stroke-width="1.2" stroke-linecap="round"/>
+          <rect x="14" y="16" width="3" height="6" rx="0.8" fill="#39ff88"/>
+          <line x1="22.5" y1="10" x2="22.5" y2="20" stroke="#a855f7" stroke-width="1.2" stroke-linecap="round"/>
+          <rect x="21" y="12" width="3" height="6" rx="0.8" fill="#a855f7"/>
+          <!-- trend line with arrow -->
+          <path d="M6 26 L15 18 L22 14 L30 8" fill="none" stroke="url(#logoGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M27 8 L30 8 L30 11" fill="none" stroke="#39ff88" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="nav__logo-text">
+          <span class="nav__logo-name">Крипто Ной</span>
+          <span class="nav__logo-sub">системный трейдинг</span>
+        </span>
       </a>
       <a class="nav__tg" href="https://t.me/bosspot" target="_blank" rel="noopener">Telegram</a>
     </nav>
 
     <div class="hero__inner">
-      <span class="eyebrow reveal">системный трейдинг · стратегия «Макдивер»</span>
-      <h1 class="hero__title reveal">Крипто Ной</h1>
-      <p class="hero__subtitle reveal">
-        С 2016 на рынке. Предсказал падение и рост биткоина с точностью до доллара.
-        Узнай, как торговать <em>без угадываний</em> и системно зарабатывать на крипте.
-      </p>
+      <div class="hero__copy">
+        <span class="eyebrow reveal">системный трейдинг · стратегия «Макдивер»</span>
+        <h1 class="hero__title reveal">Крипто Ной</h1>
+        <p class="hero__subtitle reveal">
+          С 2016 на рынке. Предсказал падение и рост биткоина с точностью до доллара.
+          Узнай, как торговать <em>без угадываний</em> и системно зарабатывать на крипте.
+        </p>
 
-      <ul class="stats reveal" id="stats">
-        <li class="stat">
-          <span class="stat__value" data-count="2016" data-suffix="">2016</span>
-          <span class="stat__label">на рынке с</span>
-        </li>
-        <li class="stat">
-          <span class="stat__value" data-count="900" data-suffix="+">0</span>
-          <span class="stat__label">видеоразборов</span>
-        </li>
-        <li class="stat">
-          <span class="stat__value" data-count="250000" data-prefix="$" data-suffix="+">$0</span>
-          <span class="stat__label">результат учеников</span>
-        </li>
-        <li class="stat">
-          <span class="stat__value" data-count="3" data-suffix="+">0</span>
-          <span class="stat__label">рыночных цикла</span>
-        </li>
-      </ul>
+        <ul class="stats reveal" id="stats">
+          <li class="stat">
+            <span class="stat__value" data-count="2016" data-suffix="">2016</span>
+            <span class="stat__label">на рынке с</span>
+          </li>
+          <li class="stat">
+            <span class="stat__value" data-count="900" data-suffix="+">0</span>
+            <span class="stat__label">видеоразборов</span>
+          </li>
+          <li class="stat">
+            <span class="stat__value" data-count="250000" data-prefix="$" data-suffix="+">$0</span>
+            <span class="stat__label">результат учеников</span>
+          </li>
+          <li class="stat">
+            <span class="stat__value" data-count="3" data-suffix="+">0</span>
+            <span class="stat__label">рыночных цикла</span>
+          </li>
+        </ul>
 
-      <a href="#gate" class="btn btn--primary btn--lg reveal">
-        Смотреть бесплатное обучение
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-
-      <div class="hero__scroll reveal" aria-hidden="true">
-        <span></span>
+        <a href="#gate" class="btn btn--primary btn--lg reveal">
+          Смотреть бесплатное обучение
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
+
+      <figure class="hero__player reveal" aria-label="Видео-визитка">
+        <div class="hero__player-frame">
+          <video
+            class="hero__player-video"
+            controls
+            playsinline
+            preload="metadata"
+            poster=""
+          >
+            <source src="https://res.cloudinary.com/dga9qc4at/video/upload/v1776362807/IMG_2369_sdkiz2.mp4" type="video/mp4" />
+            Твой браузер не поддерживает видео.
+          </video>
+          <span class="hero__player-badge">LIVE · 2026</span>
+        </div>
+      </figure>
     </div>
   </header>
 
@@ -112,7 +137,7 @@
             </span>
             <h3>Боишься потерять деньги</h3>
           </li>
-          <li class="problem reveal">
+          <li class="problem problem--offset reveal">
             <span class="problem__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none"><path d="M3 7l6 6 4-4 8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 17v-5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -133,6 +158,28 @@
          ========================================================= -->
     <section class="section section--about" id="about">
       <div class="container about">
+        <figure class="about__photo reveal" aria-label="Алексей — Крипто Ной">
+          <div class="about__photo-frame">
+            <!-- TODO: положи фото в assets/img/alexey.jpg (портрет 4:5) -->
+            <img
+              src="assets/img/alexey.jpg"
+              alt="Алексей — Крипто Ной"
+              loading="lazy"
+              decoding="async"
+              onerror="this.closest('.about__photo-frame').classList.add('is-missing'); this.remove();"
+            />
+            <div class="about__photo-fallback" aria-hidden="true">
+              <svg viewBox="0 0 120 150" fill="none">
+                <rect width="120" height="150" rx="16" fill="#0e1430"/>
+                <circle cx="60" cy="60" r="22" fill="#1a2244"/>
+                <path d="M22 140c6-24 22-36 38-36s32 12 38 36" fill="#1a2244"/>
+              </svg>
+              <p>Добавь <code>assets/img/alexey.jpg</code></p>
+            </div>
+          </div>
+          <figcaption class="about__photo-caption">Алексей · Таиланд · 2026</figcaption>
+        </figure>
+
         <div class="about__text reveal">
           <span class="eyebrow">об эксперте</span>
           <h2>Кто такой Крипто Ной?</h2>
@@ -159,28 +206,6 @@
             Моя миссия — дать вам удочку, а не рыбу.
           </blockquote>
         </div>
-
-        <aside class="about__card reveal" aria-label="Ключевые факты">
-          <div class="about__card-glow" aria-hidden="true"></div>
-          <dl class="about__facts">
-            <div>
-              <dt>Опыт</dt>
-              <dd>9+ лет</dd>
-            </div>
-            <div>
-              <dt>Циклы</dt>
-              <dd>3+</dd>
-            </div>
-            <div>
-              <dt>Ученики</dt>
-              <dd>$250 000+</dd>
-            </div>
-            <div>
-              <dt>Контент</dt>
-              <dd>900+ разборов</dd>
-            </div>
-          </dl>
-        </aside>
       </div>
     </section>
 
@@ -426,7 +451,17 @@
   <footer class="footer">
     <div class="container footer__inner">
       <div class="footer__brand">
-        <span class="nav__logo-mark">◆</span>
+        <svg class="footer__mark" viewBox="0 0 36 36" aria-hidden="true">
+          <defs>
+            <linearGradient id="footerLogoGrad" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="#a855f7" />
+              <stop offset="100%" stop-color="#39ff88" />
+            </linearGradient>
+          </defs>
+          <rect x="1.5" y="1.5" width="33" height="33" rx="9" fill="none" stroke="url(#footerLogoGrad)" stroke-width="1.4"/>
+          <path d="M6 26 L15 18 L22 14 L30 8" fill="none" stroke="url(#footerLogoGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M27 8 L30 8 L30 11" fill="none" stroke="#39ff88" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <span>Крипто Ной · <time>2016</time>–<time id="year"></time></span>
       </div>
       <nav class="footer__nav">

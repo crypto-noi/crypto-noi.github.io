@@ -73,31 +73,6 @@
     }
   }
 
-  // --- Hero video resilience --------------------------------------------
-
-  const heroVideo = document.querySelector(".hero__video");
-  if (heroVideo) {
-    const ensurePlay = () => {
-      const p = heroVideo.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
-    };
-    heroVideo.addEventListener("pause", ensurePlay);
-    heroVideo.addEventListener("ended", ensurePlay);
-    heroVideo.addEventListener("loadeddata", ensurePlay);
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) ensurePlay();
-    });
-    // iOS sometimes needs a nudge after first interaction
-    document.addEventListener(
-      "touchstart",
-      () => {
-        if (heroVideo.paused) ensurePlay();
-      },
-      { once: true, passive: true }
-    );
-    ensurePlay();
-  }
-
   // --- Gate (exchanges → unlock lesson) ---------------------------------
 
   const player = document.getElementById("player");
