@@ -92,8 +92,12 @@
         <div class="hero__player-frame">
           <video
             class="hero__player-video"
-            controls
+            id="hero-video"
+            autoplay
+            muted
+            loop
             playsinline
+            controls
             preload="metadata"
             poster=""
           >
@@ -101,6 +105,17 @@
             Твой браузер не поддерживает видео.
           </video>
           <span class="hero__player-badge">LIVE · 2026</span>
+          <button
+            type="button"
+            class="hero__player-playbtn"
+            id="hero-play-overlay"
+            aria-label="Воспроизвести видео"
+            hidden
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </button>
         </div>
       </figure>
     </div>

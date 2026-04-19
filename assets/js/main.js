@@ -6,31 +6,24 @@
   const STORAGE_PREFIX = "noi.registered.";
   const EXCHANGES = ["bybit", "toobit", "weex"];
 
-  // --- Reveal on scroll --------------------------------------------------
+  // Performance gate: skip JS animations on small viewports & reduced-motion users.
+  const mobileMQ = window.matchMedia("(max-width: 768px)");
+  const reducedMotionMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const isMobile = () => mobileMQ.matches;
+  const skipAnimations = () => isMobile() || reducedMotionMQ.matches;
 
-  const revealables = document.querySelectorAll(".reveal");
-  if ("IntersectionObserver" in window && revealables.length) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            io.unobserve(entry.target);
-          }
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-    );
-    revealables.forEach((el) => io.observe(el));
-  } else {
-    revealables.forEach((el) => el.classList.add("is-visible"));
-  }
-
-  // --- Animated stats ----------------------------------------------------
+  // --- Stat formatting ---------------------------------------------------
 
   const formatStatValue = (n, prefix, suffix) => {
     const pretty = n >= 10000 ? n.toLocaleString("ru-RU").replace(/,/g, " ") : String(n);
     return `${prefix}${pretty}${suffix}`;
+  };
+
+  const setStatFinal = (el) => {
+    const target = Number(el.dataset.count || "0");
+    const prefix = el.dataset.prefix || "";
+    const suffix = el.dataset.suffix || "";
+    el.textContent = formatStatValue(target, prefix, suffix);
   };
 
   const animateCount = (el) => {
@@ -53,23 +46,86 @@
     requestAnimationFrame(tick);
   };
 
+  const revealables = document.querySelectorAll(".reveal");
   const statValues = document.querySelectorAll(".stat__value[data-count]");
-  if (statValues.length) {
-    if ("IntersectionObserver" in window) {
-      const statsIO = new IntersectionObserver(
+
+  if (skipAnimations()) {
+    // Mobile / reduced motion → static, no IO, no rAF loops.
+    revealables.forEach((el) => el.classList.add("is-visible"));
+    statValues.forEach(setStatFinal);
+  } else {
+    // Desktop → keep the rich UX.
+    if ("IntersectionObserver" in window && revealables.length) {
+      const io = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
             if (entry.isIntersecting) {
-              animateCount(entry.target);
-              statsIO.unobserve(entry.target);
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
             }
           }
         },
-        { threshold: 0.4 }
+        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
       );
-      statValues.forEach((el) => statsIO.observe(el));
+      revealables.forEach((el) => io.observe(el));
     } else {
-      statValues.forEach(animateCount);
+      revealables.forEach((el) => el.classList.add("is-visible"));
+    }
+
+    if (statValues.length) {
+      if ("IntersectionObserver" in window) {
+        const statsIO = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                animateCount(entry.target);
+                statsIO.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.4 }
+        );
+        statValues.forEach((el) => statsIO.observe(el));
+      } else {
+        statValues.forEach(animateCount);
+      }
+    }
+  }
+
+  // --- Hero video: autoplay with manual fallback -------------------------
+
+  const heroVideo = document.getElementById("hero-video");
+  const heroPlayBtn = document.getElementById("hero-play-overlay");
+
+  if (heroVideo && heroPlayBtn) {
+    const showOverlay = () => {
+      heroPlayBtn.hidden = false;
+    };
+    const hideOverlay = () => {
+      heroPlayBtn.hidden = true;
+    };
+
+    const tryPlay = () => {
+      const p = heroVideo.play();
+      if (p && typeof p.then === "function") {
+        p.then(hideOverlay).catch(showOverlay);
+      }
+    };
+
+    heroVideo.addEventListener("play", hideOverlay);
+    heroVideo.addEventListener("playing", hideOverlay);
+
+    heroPlayBtn.addEventListener("click", () => {
+      // Some browsers require muted=true to autoplay; user click already unblocks audio
+      // but we still keep muted on the manual trigger to match initial UX.
+      heroVideo.muted = true;
+      tryPlay();
+    });
+
+    if (heroVideo.readyState >= 2) {
+      tryPlay();
+    } else {
+      heroVideo.addEventListener("loadeddata", tryPlay, { once: true });
     }
   }
 
