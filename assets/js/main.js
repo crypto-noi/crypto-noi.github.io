@@ -4,7 +4,7 @@
 
 (() => {
   const STORAGE_PREFIX = "noi.registered.";
-  const EXCHANGES = ["bybit", "toobit", "weex"];
+  const EXCHANGES = ["bingx", "bybit", "weex"];
 
   // Performance gate: skip JS animations on small viewports & reduced-motion users.
   const mobileMQ = window.matchMedia("(max-width: 768px)");
@@ -181,6 +181,19 @@
       if (!id) return;
       markRegistered(id);
       el.classList.add("is-done");
+      updateGateState();
+    });
+  });
+
+  // Secondary "already have account" links (e.g. Bybit affiliate-bind) also
+  // count as registration — user is already on the exchange.
+  document.querySelectorAll(".exchange__alt-link[data-exchange]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const id = el.dataset.exchange;
+      if (!id) return;
+      markRegistered(id);
+      const primary = document.querySelector(`.exchange[data-exchange="${id}"]`);
+      if (primary) primary.classList.add("is-done");
       updateGateState();
     });
   });

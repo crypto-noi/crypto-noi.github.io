@@ -65,8 +65,8 @@
 
         <ul class="stats reveal" id="stats">
           <li class="stat">
-            <span class="stat__value" data-count="2016" data-suffix="">2016</span>
-            <span class="stat__label">на рынке с</span>
+            <span class="stat__value" data-count="2016" data-prefix="С " data-suffix="">С 2016</span>
+            <span class="stat__label">года на рынке</span>
           </li>
           <li class="stat">
             <span class="stat__value" data-count="900" data-suffix="+">0</span>
@@ -83,7 +83,7 @@
         </ul>
 
         <a href="#gate" class="btn btn--primary btn--lg reveal">
-          Смотреть бесплатное обучение
+          Начни <span class="btn__hl">БЕСПЛАТНОЕ</span> обучение прямо сейчас
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
@@ -130,7 +130,7 @@
         <header class="section__head reveal">
           <span class="eyebrow eyebrow--danger">проблема</span>
           <h2>Узнаёшь себя?</h2>
-          <p class="section__lede">Если хотя бы один пункт — про тебя, дальше читай внимательно.</p>
+          <p class="section__lede">Если ты узнал себя хотя бы в одном пункте — тебе точно стоит посмотреть дальше.</p>
         </header>
 
         <ul class="problems">
@@ -231,21 +231,23 @@
       <div class="container">
         <header class="section__head reveal">
           <span class="eyebrow">бесплатный урок</span>
-          <h2>Начни обучение прямо сейчас — бесплатно</h2>
+          <h2>Начни <span class="hl">БЕСПЛАТНОЕ</span> обучение прямо сейчас</h2>
           <p class="section__lede">Один ролик, после которого рынок перестаёт быть казино.</p>
         </header>
 
         <figure class="player reveal locked" id="player">
           <div class="player__frame">
-            <!-- TODO: подставить реальный src MP4 / HLS для бесплатного урока -->
             <video
               class="player__video"
+              id="lesson-video"
+              autoplay
+              muted
+              loop
+              playsinline
               controls
               preload="metadata"
-              playsinline
-              poster="https://res.cloudinary.com/dga9qc4at/video/upload/v1776362807/IMG_2369_sdkiz2.jpg"
             >
-              <source src="" type="video/mp4" />
+              <source src="assets/videos/free-lesson.mp4" type="video/mp4" />
               Твой браузер не поддерживает видео. Открой его в современном браузере.
             </video>
 
@@ -254,7 +256,6 @@
               <p>Урок откроется ниже — после регистрации на бирже</p>
             </div>
           </div>
-          <figcaption class="player__caption">Плейсхолдер · замени <code>&lt;source src&gt;</code> на ссылку ролика</figcaption>
         </figure>
       </div>
     </section>
@@ -269,17 +270,31 @@
           <h2>Получить доступ к бесплатному уроку</h2>
           <p class="section__lede">
             Чтобы открыть обучение — зарегистрируйся на любой бирже ниже.
-            Хватит одной — это бесплатно и занимает пару минут.
+            Достаточно одного шага. Это бесплатно и займёт всего пару минут.
           </p>
         </header>
 
         <ul class="exchanges reveal" role="list">
-          <!-- TODO: подставить реферальные ссылки бирж -->
+          <li>
+            <a
+              class="exchange"
+              data-exchange="bingx"
+              href="https://bingx.pro/int/0F9hit"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="exchange__name">BingX</span>
+              <span class="exchange__hint">регистрация</span>
+              <span class="exchange__check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </li>
           <li>
             <a
               class="exchange"
               data-exchange="bybit"
-              href="https://www.bybit.com/"
+              href="https://partner.bybit.com/b/noi"
               target="_blank"
               rel="noopener"
             >
@@ -289,27 +304,24 @@
                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </span>
             </a>
-          </li>
-          <li>
-            <a
-              class="exchange"
-              data-exchange="toobit"
-              href="https://www.toobit.com/"
-              target="_blank"
-              rel="noopener"
-            >
-              <span class="exchange__name">Toobit</span>
-              <span class="exchange__hint">регистрация</span>
-              <span class="exchange__check" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </a>
+            <p class="exchange__alt">
+              Уже есть аккаунт Bybit?
+              <a
+                class="exchange__alt-link"
+                data-exchange="bybit"
+                href="https://www.bybit.com/ru-RU/aff-bind?affiliate_id=44222"
+                target="_blank"
+                rel="noopener"
+              >
+                Привязать аккаунт →
+              </a>
+            </p>
           </li>
           <li>
             <a
               class="exchange"
               data-exchange="weex"
-              href="https://www.weex.com/"
+              href="https://www.weex.com/ru/register?vipCode=2c7d"
               target="_blank"
               rel="noopener"
             >
@@ -423,7 +435,7 @@
       <div class="container warmup">
         <div class="warmup__inner reveal">
           <span class="eyebrow eyebrow--neon">следующий шаг</span>
-          <h2>Начни обучение прямо сейчас — бесплатно</h2>
+          <h2>Начни <span class="hl">БЕСПЛАТНОЕ</span> обучение прямо сейчас</h2>
           <p class="warmup__lede">После просмотра урока ты:</p>
           <ul class="warmup__list">
             <li>начнёшь понимать рынок, а не угадывать</li>
