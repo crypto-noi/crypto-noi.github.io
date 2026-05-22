@@ -86,6 +86,7 @@
           Начни <span class="btn__hl">БЕСПЛАТНОЕ</span> обучение прямо сейчас
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
+        <p class="hero__hint reveal">Доступ выдаёт чат-ассистент справа внизу — это занимает пару минут.</p>
       </div>
 
       <figure class="hero__player reveal" aria-label="Видео-визитка">
@@ -230,9 +231,7 @@
     <section class="section section--lesson" id="lesson">
       <div class="container">
         <header class="section__head reveal">
-          <span class="eyebrow">бесплатный урок</span>
           <h2>Начни <span class="hl">БЕСПЛАТНОЕ</span> обучение прямо сейчас</h2>
-          <p class="section__lede">Один ролик, после которого рынок перестаёт быть казино.</p>
         </header>
 
         <figure class="player reveal locked" id="player">
@@ -251,9 +250,12 @@
               Твой браузер не поддерживает видео. Открой его в современном браузере.
             </video>
 
-            <div class="player__lock" aria-hidden="true">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M6 10V8a6 6 0 1112 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4" y="10" width="16" height="11" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg>
-              <p>Урок откроется ниже — после регистрации на бирже</p>
+            <div class="player__lock">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 10V8a6 6 0 1112 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4" y="10" width="16" height="11" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg>
+              <p>Открой чат-ассистент справа внизу — он пришлёт ссылку, попросит UID и откроет урок.</p>
+              <button type="button" class="btn btn--ghost" data-open-chat>
+                Открыть чат-ассистент
+              </button>
             </div>
           </div>
         </figure>
@@ -261,85 +263,50 @@
     </section>
 
     <!-- =========================================================
-         5. ГЕЙТ
+         5. ГЕЙТ (через чат-ассистента)
          ========================================================= -->
     <section class="section section--gate" id="gate">
       <div class="container">
         <header class="section__head reveal">
-          <span class="eyebrow eyebrow--neon">доступ</span>
-          <h2>Получить доступ к бесплатному уроку</h2>
+          <h2>Получи доступ к уроку за 3 шага</h2>
           <p class="section__lede">
-            Чтобы открыть обучение — зарегистрируйся на любой бирже ниже.
-            Достаточно одного шага. Это бесплатно и займёт всего пару минут.
+            Доступ выдаёт встроенный чат-ассистент — он проведёт по короткой инструкции
+            и откроет урок прямо здесь, на странице.
           </p>
         </header>
 
-        <ul class="exchanges reveal" role="list">
-          <li>
-            <a
-              class="exchange"
-              data-exchange="bingx"
-              href="https://bingx.pro/int/0F9hit"
-              target="_blank"
-              rel="noopener"
-            >
-              <span class="exchange__name">BingX</span>
-              <span class="exchange__hint">регистрация</span>
-              <span class="exchange__check" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </a>
+        <ol class="gate-steps reveal" role="list">
+          <li class="gate-step">
+            <span class="gate-step__num">1</span>
+            <div class="gate-step__body">
+              <h3>Открой чат</h3>
+              <p>Кнопка снизу справа — ассистент сразу поздоровается и проведёт по шагам.</p>
+            </div>
           </li>
-          <li>
-            <a
-              class="exchange"
-              data-exchange="bybit"
-              href="https://partner.bybit.com/b/noi"
-              target="_blank"
-              rel="noopener"
-            >
-              <span class="exchange__name">Bybit</span>
-              <span class="exchange__hint">регистрация</span>
-              <span class="exchange__check" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </a>
-            <p class="exchange__alt">
-              Уже есть аккаунт Bybit?
-              <a
-                class="exchange__alt-link"
-                data-exchange="bybit"
-                href="https://www.bybit.com/ru-RU/aff-bind?affiliate_id=44222"
-                target="_blank"
-                rel="noopener"
-              >
-                Привязать аккаунт →
-              </a>
-            </p>
+          <li class="gate-step">
+            <span class="gate-step__num">2</span>
+            <div class="gate-step__body">
+              <h3>Выбери биржу</h3>
+              <p>BingX, Bybit или Weex — на твой выбор. Регистрация бесплатная.</p>
+            </div>
           </li>
-          <li>
-            <a
-              class="exchange"
-              data-exchange="weex"
-              href="https://www.weex.com/ru/register?vipCode=2c7d"
-              target="_blank"
-              rel="noopener"
-            >
-              <span class="exchange__name">Weex</span>
-              <span class="exchange__hint">регистрация</span>
-              <span class="exchange__check" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </a>
+          <li class="gate-step">
+            <span class="gate-step__num">3</span>
+            <div class="gate-step__body">
+              <h3>Введи UID — получи доступ</h3>
+              <p>UID — это твой идентификатор аккаунта на бирже. Урок откроется сразу.</p>
+            </div>
           </li>
-        </ul>
+        </ol>
 
         <div class="gate__cta reveal">
-          <button type="button" id="unlock-btn" class="btn btn--primary btn--lg" disabled>
-            Открыть урок
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <button type="button" id="open-chat" class="btn btn--primary btn--lg">
+            Открыть чат-ассистент
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </button>
-          <p class="gate__note" id="gate-note">Активируется после регистрации хотя бы на одной бирже</p>
+          <p class="gate__note">Это занимает пару минут.</p>
         </div>
       </div>
     </section>
@@ -352,7 +319,6 @@
         <header class="section__head reveal">
           <span class="eyebrow">результаты</span>
           <h2>Результаты учеников стратегии «Макдивер»</h2>
-          <p class="section__lede">Не обещания — реальные сделки учеников.</p>
         </header>
 
         <ul class="results">
@@ -383,7 +349,6 @@
         <header class="section__head reveal">
           <span class="eyebrow">отзывы</span>
           <h2>Реальные отзывы учеников</h2>
-          <p class="section__lede">Живые кружки — без постановки, без монтажа.</p>
         </header>
 
         <ul class="reviews">
@@ -434,18 +399,19 @@
     <section class="section section--warmup" id="warmup">
       <div class="container warmup">
         <div class="warmup__inner reveal">
-          <span class="eyebrow eyebrow--neon">следующий шаг</span>
-          <h2>Начни <span class="hl">БЕСПЛАТНОЕ</span> обучение прямо сейчас</h2>
+          <h2>Начни обучение прямо сейчас</h2>
           <p class="warmup__lede">После просмотра урока ты:</p>
           <ul class="warmup__list">
             <li>начнёшь понимать рынок, а не угадывать</li>
             <li>перестанешь брать сделки «на эмоциях»</li>
             <li>начнёшь торговать системно, с риск-менеджментом</li>
           </ul>
-          <a href="#gate" class="btn btn--primary btn--lg">
-            Смотреть бесплатный урок
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
+          <button type="button" class="btn btn--primary btn--lg" data-open-chat>
+            Открыть чат-ассистент
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
       </div>
     </section>
@@ -502,6 +468,83 @@
       </p>
     </div>
   </footer>
+
+  <!-- =========================================================
+       Чат-ассистент (floating)
+       ========================================================= -->
+  <div class="chat" id="chat" data-open="false">
+    <button
+      type="button"
+      class="chat__launcher"
+      id="chat-launcher"
+      aria-label="Открыть чат с ассистентом"
+      aria-haspopup="dialog"
+      aria-controls="chat-panel"
+    >
+      <svg class="chat__launcher-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="9" cy="12" r="1" fill="currentColor"/>
+        <circle cx="13" cy="12" r="1" fill="currentColor"/>
+        <circle cx="17" cy="12" r="1" fill="currentColor"/>
+      </svg>
+      <span class="chat__launcher-label">Доступ к уроку</span>
+      <span class="chat__launcher-pulse" aria-hidden="true"></span>
+    </button>
+
+    <div
+      class="chat__panel"
+      id="chat-panel"
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="chat-title"
+      hidden
+    >
+      <header class="chat__header">
+        <div class="chat__avatar" aria-hidden="true">
+          <svg viewBox="0 0 36 36">
+            <defs>
+              <linearGradient id="chatAvaGrad" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stop-color="#a855f7"/>
+                <stop offset="100%" stop-color="#39ff88"/>
+              </linearGradient>
+            </defs>
+            <rect x="1.5" y="1.5" width="33" height="33" rx="9" fill="rgba(14,20,48,0.7)" stroke="url(#chatAvaGrad)" stroke-width="1.4"/>
+            <path d="M6 26 L15 18 L22 14 L30 8" fill="none" stroke="url(#chatAvaGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M27 8 L30 8 L30 11" fill="none" stroke="#39ff88" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="chat__title-block">
+          <p class="chat__title" id="chat-title">Крипто Ной</p>
+          <small class="chat__status"><span class="chat__status-dot"></span>онлайн · отвечает сразу</small>
+        </div>
+        <button type="button" class="chat__icon-btn" id="chat-reset" aria-label="Начать заново" title="Начать заново">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 4v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="chat__icon-btn" id="chat-close" aria-label="Свернуть чат">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <div class="chat__messages" id="chat-messages" role="log" aria-live="polite"></div>
+
+      <form class="chat__input" id="chat-input-form" autocomplete="off" hidden>
+        <input
+          type="text"
+          id="chat-input-field"
+          class="chat__input-field"
+          placeholder="Введи свой UID"
+          inputmode="text"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="40"
+          aria-label="UID аккаунта"
+        />
+        <button type="submit" class="chat__input-send" aria-label="Отправить">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
 
   <script src="assets/js/main.js" defer></script>
 </body>

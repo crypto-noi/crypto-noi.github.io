@@ -3,9 +3,6 @@
    ========================================================= */
 
 (() => {
-  const STORAGE_PREFIX = "noi.registered.";
-  const EXCHANGES = ["bingx", "bybit", "weex"];
-
   // Performance gate: skip JS animations on small viewports & reduced-motion users.
   const mobileMQ = window.matchMedia("(max-width: 768px)");
   const reducedMotionMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -50,11 +47,9 @@
   const statValues = document.querySelectorAll(".stat__value[data-count]");
 
   if (skipAnimations()) {
-    // Mobile / reduced motion → static, no IO, no rAF loops.
     revealables.forEach((el) => el.classList.add("is-visible"));
     statValues.forEach(setStatFinal);
   } else {
-    // Desktop → keep the rich UX.
     if ("IntersectionObserver" in window && revealables.length) {
       const io = new IntersectionObserver(
         (entries) => {
@@ -98,133 +93,436 @@
   const heroPlayBtn = document.getElementById("hero-play-overlay");
 
   if (heroVideo && heroPlayBtn) {
-    const showOverlay = () => {
-      heroPlayBtn.hidden = false;
-    };
-    const hideOverlay = () => {
-      heroPlayBtn.hidden = true;
-    };
+    const showOverlay = () => { heroPlayBtn.hidden = false; };
+    const hideOverlay = () => { heroPlayBtn.hidden = true; };
 
     const tryPlay = () => {
       const p = heroVideo.play();
-      if (p && typeof p.then === "function") {
-        p.then(hideOverlay).catch(showOverlay);
-      }
+      if (p && typeof p.then === "function") p.then(hideOverlay).catch(showOverlay);
     };
 
     heroVideo.addEventListener("play", hideOverlay);
     heroVideo.addEventListener("playing", hideOverlay);
-
     heroPlayBtn.addEventListener("click", () => {
-      // Some browsers require muted=true to autoplay; user click already unblocks audio
-      // but we still keep muted on the manual trigger to match initial UX.
       heroVideo.muted = true;
       tryPlay();
     });
 
-    if (heroVideo.readyState >= 2) {
-      tryPlay();
-    } else {
-      heroVideo.addEventListener("loadeddata", tryPlay, { once: true });
-    }
-  }
-
-  // --- Gate (exchanges → unlock lesson) ---------------------------------
-
-  const player = document.getElementById("player");
-  const unlockBtn = document.getElementById("unlock-btn");
-  const gateNote = document.getElementById("gate-note");
-  const exchangeLinks = document.querySelectorAll(".exchange[data-exchange]");
-
-  const isRegistered = (id) => {
-    try {
-      return localStorage.getItem(STORAGE_PREFIX + id) === "1";
-    } catch {
-      return false;
-    }
-  };
-
-  const markRegistered = (id) => {
-    try {
-      localStorage.setItem(STORAGE_PREFIX + id, "1");
-    } catch {
-      /* noop */
-    }
-  };
-
-  const countRegistered = () =>
-    EXCHANGES.reduce((acc, id) => acc + (isRegistered(id) ? 1 : 0), 0);
-
-  const syncExchangeVisual = () => {
-    exchangeLinks.forEach((el) => {
-      const id = el.dataset.exchange;
-      el.classList.toggle("is-done", isRegistered(id));
-    });
-  };
-
-  const updateGateState = () => {
-    const count = countRegistered();
-    const ready = count > 0;
-
-    if (unlockBtn) unlockBtn.disabled = !ready;
-
-    if (gateNote) {
-      gateNote.textContent = ready
-        ? "Доступ открыт. Жми «Открыть урок»."
-        : "Активируется после регистрации хотя бы на одной бирже";
-    }
-  };
-
-  exchangeLinks.forEach((el) => {
-    el.addEventListener("click", () => {
-      const id = el.dataset.exchange;
-      if (!id) return;
-      markRegistered(id);
-      el.classList.add("is-done");
-      updateGateState();
-    });
-  });
-
-  // Secondary "already have account" links (e.g. Bybit affiliate-bind) also
-  // count as registration — user is already on the exchange.
-  document.querySelectorAll(".exchange__alt-link[data-exchange]").forEach((el) => {
-    el.addEventListener("click", () => {
-      const id = el.dataset.exchange;
-      if (!id) return;
-      markRegistered(id);
-      const primary = document.querySelector(`.exchange[data-exchange="${id}"]`);
-      if (primary) primary.classList.add("is-done");
-      updateGateState();
-    });
-  });
-
-  if (unlockBtn) {
-    unlockBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (unlockBtn.disabled) return;
-      if (player) {
-        player.classList.remove("locked");
-        player.scrollIntoView({ behavior: "smooth", block: "center" });
-        const video = player.querySelector("video");
-        if (video) {
-          setTimeout(() => {
-            const p = video.play();
-            if (p && typeof p.catch === "function") p.catch(() => {});
-          }, 600);
-        }
-      }
-    });
-  }
-
-  // Restore state on load
-  syncExchangeVisual();
-  updateGateState();
-  if (countRegistered() > 0 && player) {
-    player.classList.remove("locked");
+    if (heroVideo.readyState >= 2) tryPlay();
+    else heroVideo.addEventListener("loadeddata", tryPlay, { once: true });
   }
 
   // --- Footer year -------------------------------------------------------
 
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  // ==========================================================================
+  // Чат-ассистент — пошаговый онбординг
+  // ==========================================================================
+
+  const EXCHANGES = {
+    bingx: {
+      name: "BingX",
+      url: "https://bingx.pro/int/0F9hit",
+    },
+    bybit: {
+      name: "Bybit",
+      url: "https://partner.bybit.com/b/noi",
+      alt: {
+        label: "Уже есть аккаунт Bybit — привязать",
+        url: "https://www.bybit.com/ru-RU/aff-bind?affiliate_id=44222",
+      },
+    },
+    weex: {
+      name: "Weex",
+      url: "https://www.weex.com/ru/register?vipCode=2c7d",
+    },
+  };
+
+  const STORAGE_KEY = "noi.chat.v1";
+  const TYPING_BASE_MS = skipAnimations() ? 220 : 520;
+
+  const defaultState = () => ({
+    step: "greet", // greet | choose | go | uid | done
+    exchange: null,
+    visited: false,
+    uid: null,
+  });
+
+  const loadState = () => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultState();
+      const parsed = JSON.parse(raw);
+      return { ...defaultState(), ...parsed };
+    } catch {
+      return defaultState();
+    }
+  };
+
+  const saveState = (s) => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {}
+  };
+
+  const clearState = () => {
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+  };
+
+  let state = loadState();
+
+  const chat = document.getElementById("chat");
+  const launcher = document.getElementById("chat-launcher");
+  const panel = document.getElementById("chat-panel");
+  const messagesEl = document.getElementById("chat-messages");
+  const inputForm = document.getElementById("chat-input-form");
+  const inputField = document.getElementById("chat-input-field");
+  const resetBtn = document.getElementById("chat-reset");
+  const closeBtn = document.getElementById("chat-close");
+  const playerEl = document.getElementById("player");
+  const lessonVideo = document.getElementById("lesson-video");
+
+  if (!chat || !launcher || !panel || !messagesEl) return;
+
+  const openChat = () => {
+    panel.hidden = false;
+    // next frame so transition runs
+    requestAnimationFrame(() => {
+      chat.dataset.open = "true";
+    });
+    // If we're at the initial step and the log is empty, kick off the greet flow.
+    if (state.step === "greet" && messagesEl.childElementCount === 0) {
+      runGreet();
+    }
+    setTimeout(() => { messagesEl.scrollTop = messagesEl.scrollHeight; }, 50);
+  };
+
+  const closeChat = () => {
+    chat.dataset.open = "false";
+    setTimeout(() => { panel.hidden = true; }, 220);
+  };
+
+  document.querySelectorAll('[data-open-chat], #open-chat').forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      openChat();
+    });
+  });
+
+  launcher.addEventListener("click", openChat);
+  closeBtn?.addEventListener("click", closeChat);
+
+  resetBtn?.addEventListener("click", () => {
+    clearState();
+    state = defaultState();
+    messagesEl.innerHTML = "";
+    inputForm.hidden = true;
+    // re-lock lesson
+    if (playerEl) playerEl.classList.add("locked");
+    runGreet();
+  });
+
+  // --- Renderers ---------------------------------------------------------
+
+  const appendRow = (who, content, actions) => {
+    const row = document.createElement("div");
+    row.className = `chat-row chat-row--${who}`;
+
+    if (content) {
+      const bubble = document.createElement("div");
+      bubble.className = "chat-bubble";
+      // content can be string or DocumentFragment / element
+      if (typeof content === "string") bubble.innerHTML = content;
+      else bubble.appendChild(content);
+      row.appendChild(bubble);
+    }
+
+    if (actions && actions.length) {
+      const actionsEl = document.createElement("div");
+      actionsEl.className = "chat-actions";
+      actions.forEach((a) => actionsEl.appendChild(a));
+      row.appendChild(actionsEl);
+    }
+
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return row;
+  };
+
+  const showTyping = () => {
+    const row = document.createElement("div");
+    row.className = "chat-row chat-row--bot";
+    const typing = document.createElement("div");
+    typing.className = "chat-bubble chat-typing";
+    typing.innerHTML = "<span></span><span></span><span></span>";
+    row.appendChild(typing);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return row;
+  };
+
+  const botSay = (htmlOrEl, opts = {}) =>
+    new Promise((resolve) => {
+      const typingRow = showTyping();
+      const delay = opts.delay ?? TYPING_BASE_MS;
+      setTimeout(() => {
+        typingRow.remove();
+        const row = appendRow("bot", htmlOrEl, opts.actions);
+        resolve(row);
+      }, delay);
+    });
+
+  const userSay = (text) => appendRow("user", escapeHtml(text));
+
+  const escapeHtml = (s) =>
+    String(s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+    );
+
+  const makeBtn = (label, opts = {}) => {
+    const isLink = !!opts.href;
+    const el = document.createElement(isLink ? "a" : "button");
+    el.className = `chat-action${opts.ghost ? " chat-action--ghost" : ""}`;
+    if (isLink) {
+      el.href = opts.href;
+      el.target = "_blank";
+      el.rel = "noopener";
+    } else {
+      el.type = "button";
+    }
+    el.innerHTML = opts.icon ? `${opts.icon} ${label}` : label;
+    if (opts.onClick) el.addEventListener("click", opts.onClick);
+    return el;
+  };
+
+  // --- Flow steps --------------------------------------------------------
+
+  const persist = () => saveState(state);
+
+  const runGreet = async () => {
+    state.step = "greet";
+    persist();
+    await botSay(
+      "Привет 👋 Я ассистент Алексея — помогу открыть бесплатный урок по стратегии <strong>«Макдивер»</strong>."
+    );
+    await botSay(
+      "Пройдём короткую инструкцию из 3 шагов. Готов?",
+      {
+        delay: 700,
+        actions: [
+          makeBtn("Поехали", { onClick: runChoose }),
+        ],
+      }
+    );
+  };
+
+  const runChoose = async () => {
+    userSay("Поехали");
+    state.step = "choose";
+    persist();
+    await botSay("Выбери биржу, на которой удобнее зарегистрироваться:", {
+      actions: Object.entries(EXCHANGES).map(([id, ex]) =>
+        makeBtn(ex.name, { onClick: () => runGo(id) })
+      ),
+    });
+  };
+
+  const runGo = async (id) => {
+    const ex = EXCHANGES[id];
+    if (!ex) return;
+    state.exchange = id;
+    state.step = "go";
+    state.visited = false;
+    persist();
+
+    userSay(ex.name);
+
+    await botSay(
+      `Отлично, <strong>${ex.name}</strong>. Перейди по ссылке ниже, заведи аккаунт и вернись сюда.`
+    );
+
+    const linkBtn = makeBtn(`Открыть ${ex.name} →`, {
+      href: ex.url,
+      onClick: () => {
+        state.visited = true;
+        persist();
+      },
+    });
+
+    const actions = [linkBtn];
+
+    if (ex.alt) {
+      actions.push(
+        makeBtn(ex.alt.label, {
+          href: ex.alt.url,
+          ghost: true,
+          onClick: () => {
+            state.visited = true;
+            persist();
+          },
+        })
+      );
+    }
+
+    await botSay("Открой ссылку в новой вкладке:", { actions });
+
+    await botSay("Когда зарегистрируешься — жми кнопку ниже.", {
+      delay: 700,
+      actions: [
+        makeBtn("Я зарегистрировался", { onClick: runUid }),
+        makeBtn("Другую биржу", { ghost: true, onClick: runChoose }),
+      ],
+    });
+  };
+
+  const runUid = async () => {
+    userSay("Я зарегистрировался");
+    state.step = "uid";
+    persist();
+    await botSay(
+      "Огонь. Теперь введи свой <strong>UID</strong> — это идентификатор твоего аккаунта на бирже (обычно цифры, найдёшь в профиле)."
+    );
+    await botSay("Введи UID в поле ниже:", { delay: 600 });
+
+    inputForm.hidden = false;
+    inputField.value = "";
+    inputField.focus();
+  };
+
+  const runDone = async (uid) => {
+    state.uid = uid;
+    state.step = "done";
+    persist();
+
+    inputForm.hidden = true;
+    userSay(`UID: ${uid}`);
+
+    await botSay("Принято ✅");
+    await botSay(
+      "Проверяю аккаунт…",
+      { delay: 800 }
+    );
+    await botSay(
+      "Готово. Доступ к бесплатному уроку открыт.",
+      {
+        delay: 1100,
+        actions: [
+          makeBtn("Смотреть урок", { onClick: unlockAndGoToLesson }),
+        ],
+      }
+    );
+
+    // Unlock the lesson player immediately so the user sees it the moment they close chat.
+    unlockLesson();
+  };
+
+  const unlockLesson = () => {
+    if (playerEl) playerEl.classList.remove("locked");
+  };
+
+  const unlockAndGoToLesson = () => {
+    unlockLesson();
+    closeChat();
+    const target = document.getElementById("lesson");
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => {
+      if (lessonVideo) {
+        lessonVideo.muted = true;
+        const p = lessonVideo.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+      }
+    }, 600);
+  };
+
+  inputForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = (inputField.value || "").trim();
+    if (!v || v.length < 3) {
+      inputField.focus();
+      inputField.classList.add("is-invalid");
+      return;
+    }
+    inputField.classList.remove("is-invalid");
+    runDone(v);
+  });
+
+  // --- Restore from saved state -----------------------------------------
+
+  const restore = async () => {
+    // Trivial restore: just replay the final state without typing animations.
+    if (state.step === "greet") return; // nothing to render yet
+
+    const quick = (htmlOrEl, opts = {}) => appendRow("bot", htmlOrEl, opts.actions);
+    const quickUser = (t) => userSay(t);
+
+    quick("Привет 👋 Я ассистент Алексея — помогу открыть бесплатный урок по стратегии <strong>«Макдивер»</strong>.");
+    quick("Пройдём короткую инструкцию из 3 шагов. Готов?");
+
+    if (state.step === "choose") {
+      quickUser("Поехали");
+      quick("Выбери биржу, на которой удобнее зарегистрироваться:", {
+        actions: Object.entries(EXCHANGES).map(([id, ex]) =>
+          makeBtn(ex.name, { onClick: () => runGo(id) })
+        ),
+      });
+      return;
+    }
+
+    if (state.exchange) {
+      quickUser("Поехали");
+      const ex = EXCHANGES[state.exchange];
+      quickUser(ex.name);
+      quick(`Отлично, <strong>${ex.name}</strong>. Перейди по ссылке ниже, заведи аккаунт и вернись сюда.`);
+
+      const actions = [
+        makeBtn(`Открыть ${ex.name} →`, {
+          href: ex.url,
+          onClick: () => { state.visited = true; persist(); },
+        }),
+      ];
+      if (ex.alt) {
+        actions.push(makeBtn(ex.alt.label, {
+          href: ex.alt.url,
+          ghost: true,
+          onClick: () => { state.visited = true; persist(); },
+        }));
+      }
+      quick("Открой ссылку в новой вкладке:", { actions });
+    }
+
+    if (state.step === "go") {
+      quick("Когда зарегистрируешься — жми кнопку ниже.", {
+        actions: [
+          makeBtn("Я зарегистрировался", { onClick: runUid }),
+          makeBtn("Другую биржу", { ghost: true, onClick: runChoose }),
+        ],
+      });
+      return;
+    }
+
+    if (state.step === "uid") {
+      quickUser("Я зарегистрировался");
+      quick("Огонь. Теперь введи свой <strong>UID</strong> — это идентификатор твоего аккаунта на бирже (обычно цифры, найдёшь в профиле).");
+      quick("Введи UID в поле ниже:");
+      inputForm.hidden = false;
+      return;
+    }
+
+    if (state.step === "done") {
+      quickUser("Я зарегистрировался");
+      quick("Огонь. Теперь введи свой <strong>UID</strong> — это идентификатор твоего аккаунта на бирже (обычно цифры, найдёшь в профиле).");
+      quickUser(`UID: ${state.uid || ""}`);
+      quick("Принято ✅");
+      quick("Готово. Доступ к бесплатному уроку открыт.", {
+        actions: [makeBtn("Смотреть урок", { onClick: unlockAndGoToLesson })],
+      });
+      unlockLesson();
+    }
+  };
+
+  // If user previously completed the flow, lesson stays unlocked across reloads.
+  if (state.step === "done") unlockLesson();
+
+  // Pre-render history so users can re-open the chat and continue.
+  restore();
 })();
