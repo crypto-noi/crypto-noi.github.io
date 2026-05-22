@@ -77,8 +77,14 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(28px, 3.6vw, 48px);
-  line-height: 1.1;
+  font-size: clamp(28px, 3.6vw, 46px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.section__head h2 {
+  max-width: 22ch;
+  margin-inline: auto;
 }
 
 h3 {
@@ -174,27 +180,28 @@ strong {
   justify-content: center;
   gap: 10px;
   padding: 16px 28px;
-  border: 1px solid rgba(57, 255, 136, 0.5);
+  border: 1px solid rgba(57, 255, 136, 0.45);
   border-radius: 999px;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 1.2;
   text-decoration: none;
   color: #04110a;
   background: linear-gradient(135deg, #5cff9c, #1ee375);
   cursor: pointer;
   transition: transform 0.2s var(--ease), box-shadow 0.3s var(--ease), filter 0.2s ease;
   box-shadow:
-    0 0 0 0 rgba(57, 255, 136, 0),
-    0 12px 32px -10px rgba(57, 255, 136, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 12px 32px -12px rgba(57, 255, 136, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   will-change: transform;
 }
 
 .btn--lg {
-  padding: 18px 32px;
-  font-size: 16px;
+  padding: 18px 30px;
+  font-size: 15.5px;
+  letter-spacing: 0.008em;
 }
 
 .btn:hover,
@@ -1603,6 +1610,16 @@ strong {
 
 .chat-bubble strong {
   color: #fff;
+}
+
+.chat-bubble--error {
+  background: rgba(255, 90, 74, 0.08);
+  border-color: rgba(255, 90, 74, 0.4);
+  color: #ffd8d2;
+}
+
+.chat-bubble--error strong {
+  color: #ffe7e2;
 }
 
 .chat-actions {

@@ -434,15 +434,53 @@
     }, 600);
   };
 
+  const UID_MIN = 6;
+  const UID_MAX = 15;
+  let lastErrorRow = null;
+
+  const showError = (text) => {
+    if (lastErrorRow) {
+      lastErrorRow.remove();
+      lastErrorRow = null;
+    }
+    const row = document.createElement("div");
+    row.className = "chat-row chat-row--bot";
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble chat-bubble--error";
+    bubble.innerHTML = text;
+    row.appendChild(bubble);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    lastErrorRow = row;
+  };
+
+  const clearError = () => {
+    if (lastErrorRow) {
+      lastErrorRow.remove();
+      lastErrorRow = null;
+    }
+    inputField.classList.remove("is-invalid");
+  };
+
+  inputField?.addEventListener("input", () => {
+    if (inputField.classList.contains("is-invalid")) clearError();
+  });
+
   inputForm?.addEventListener("submit", (e) => {
     e.preventDefault();
     const v = (inputField.value || "").trim();
-    if (!v || v.length < 3) {
-      inputField.focus();
+
+    if (v.length < UID_MIN || v.length > UID_MAX) {
       inputField.classList.add("is-invalid");
+      inputField.focus();
+      inputField.select();
+      showError(
+        `UID введён неверно. Проверьте корректность — длина должна быть от <strong>${UID_MIN}</strong> до <strong>${UID_MAX}</strong> символов.`
+      );
       return;
     }
-    inputField.classList.remove("is-invalid");
+
+    clearError();
     runDone(v);
   });
 
