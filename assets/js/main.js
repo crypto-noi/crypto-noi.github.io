@@ -124,7 +124,7 @@
   const EXCHANGES = {
     bingx: {
       name: "BingX",
-      url: "https://bingx.pro/int/0F9hit",
+      url: "https://bingxdao.com/invite/PXZSFD",
     },
     bybit: {
       name: "Bybit",
@@ -179,10 +179,21 @@
   const inputField = document.getElementById("chat-input-field");
   const resetBtn = document.getElementById("chat-reset");
   const closeBtn = document.getElementById("chat-close");
-  const playerEl = document.getElementById("player");
+  const lessonsEl = document.getElementById("lessons");
   const lessonVideo = document.getElementById("lesson-video");
 
   if (!chat || !launcher || !panel || !messagesEl) return;
+
+  // Play buttons inside the lessons grid
+  document.querySelectorAll("[data-play]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const video = document.getElementById(btn.dataset.play);
+      if (!video) return;
+      const p = video.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+      video.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
 
   const openChat = () => {
     panel.hidden = false;
@@ -217,8 +228,8 @@
     state = defaultState();
     messagesEl.innerHTML = "";
     inputForm.hidden = true;
-    // re-lock lesson
-    if (playerEl) playerEl.classList.add("locked");
+    // re-lock lessons
+    lockLessons();
     runGreet();
   });
 
@@ -417,7 +428,11 @@
   };
 
   const unlockLesson = () => {
-    if (playerEl) playerEl.classList.remove("locked");
+    if (lessonsEl) lessonsEl.dataset.locked = "false";
+  };
+
+  const lockLessons = () => {
+    if (lessonsEl) lessonsEl.dataset.locked = "true";
   };
 
   const unlockAndGoToLesson = () => {
@@ -427,7 +442,6 @@
     if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     setTimeout(() => {
       if (lessonVideo) {
-        lessonVideo.muted = true;
         const p = lessonVideo.play();
         if (p && typeof p.catch === "function") p.catch(() => {});
       }
@@ -474,9 +488,7 @@
       inputField.classList.add("is-invalid");
       inputField.focus();
       inputField.select();
-      showError(
-        `UID введён неверно. Проверьте корректность — длина должна быть от <strong>${UID_MIN}</strong> до <strong>${UID_MAX}</strong> символов.`
-      );
+      showError("UID введён некорректно. Проверьте правильность ввода.");
       return;
     }
 
