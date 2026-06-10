@@ -1157,27 +1157,16 @@ strong {
 
 .result__screen {
   margin-top: auto;
-  aspect-ratio: 16 / 10;
   border-radius: 12px;
-  border: 1px dashed rgba(168, 85, 247, 0.4);
-  background:
-    repeating-linear-gradient(
-      45deg,
-      rgba(168, 85, 247, 0.05),
-      rgba(168, 85, 247, 0.05) 10px,
-      transparent 10px,
-      transparent 20px
-    );
-  display: grid;
-  place-items: center;
-  color: var(--text-muted);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  overflow: hidden;
+  border: 1px solid var(--border);
 }
 
-.result__screen::before {
-  content: attr(data-placeholder);
+.result__screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
 }
 
 /* =========================================================
