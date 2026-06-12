@@ -381,7 +381,7 @@
     </section>
 
     <!-- =========================================================
-         7. ОТЗЫВЫ (кружки)
+         7. ОТЗЫВЫ УЧЕНИКОВ
          ========================================================= -->
     <section class="section section--reviews" id="reviews">
       <div class="container">
@@ -389,43 +389,63 @@
           <h2>Реальные отзывы учеников</h2>
         </header>
 
-        <ul class="reviews">
-          <!-- TODO: подставить MP4 url каждого кружка в <source src> -->
-          <li class="review reveal">
-            <div class="review__circle">
-              <video controls muted playsinline preload="metadata">
-                <source src="" type="video/mp4" />
-              </video>
+        <ul class="testimonials">
+          <!-- Карточка 1 — голосовой отзыв -->
+          <li class="testimonial testimonial--voice reveal">
+            <header class="testimonial__head">
+              <div class="testimonial__person">
+                <div class="testimonial__avatar">А</div>
+                <div class="testimonial__id">
+                  <p class="testimonial__name">Анна</p>
+                  <p class="testimonial__meta">Голосовой отзыв · 0:30</p>
+                </div>
+              </div>
+              <span class="testimonial__badge testimonial__badge--voice">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+                голос
+              </span>
+            </header>
+
+            <div class="player" data-player>
+              <button class="player__btn" type="button" data-play aria-label="Воспроизвести голосовой отзыв">
+                <svg class="player__ico player__ico--play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+                <svg class="player__ico player__ico--pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+              </button>
+              <div class="player__wave" data-wave aria-hidden="true"></div>
+              <span class="player__time" data-time>0:30</span>
+              <audio data-audio preload="metadata" src="assets/audio/review-voice.mp3"></audio>
             </div>
-            <div class="review__body">
-              <p class="review__name">Дмитрий, 34</p>
-              <p class="review__text"><span>Пришёл:</span> сливал на фьючах третий год</p>
-              <p class="review__text"><span>Результат:</span> +$27 000 за квартал по системе</p>
-            </div>
+
+            <blockquote class="testimonial__quote">
+              Пришла в декабре. После третьего созвона уже начали торговать. За 2–3 месяца заработала 40 000$. Всегда на связи, никогда не оставляет один на один с рынком. Стратегия работает — если придерживаться, всё получится.
+            </blockquote>
+            <p class="testimonial__source">— из голосового отзыва ученицы</p>
           </li>
-          <li class="review reveal">
-            <div class="review__circle">
-              <video controls muted playsinline preload="metadata">
-                <source src="" type="video/mp4" />
-              </video>
-            </div>
-            <div class="review__body">
-              <p class="review__name">Анна, 29</p>
-              <p class="review__text"><span>Пришла:</span> нулевой опыт, боялась рынка</p>
-              <p class="review__text"><span>Результат:</span> стабильный плюс 3 месяца подряд</p>
-            </div>
-          </li>
-          <li class="review reveal">
-            <div class="review__circle">
-              <video controls muted playsinline preload="metadata">
-                <source src="" type="video/mp4" />
-              </video>
-            </div>
-            <div class="review__body">
-              <p class="review__name">Игорь, 41</p>
-              <p class="review__text"><span>Пришёл:</span> жил на сигналах</p>
-              <p class="review__text"><span>Результат:</span> своя стратегия, +$10 000 с одной сделки</p>
-            </div>
+
+          <!-- Карточка 2 — текстовый отзыв -->
+          <li class="testimonial testimonial--text reveal">
+            <header class="testimonial__head">
+              <div class="testimonial__person">
+                <div class="testimonial__avatar">Е</div>
+                <div class="testimonial__id">
+                  <p class="testimonial__name">Евгений</p>
+                  <p class="testimonial__meta">3 месяца обучения · тест-депо $10K</p>
+                </div>
+              </div>
+              <span class="testimonial__badge testimonial__badge--stat">+30% · +$3.2K</span>
+            </header>
+
+            <ul class="testimonial__bullets">
+              <li><span>Раньше</span> — по сути не торговал, лишь пробовал.</li>
+              <li><span>Сейчас</span> — чувствую себя уверенно, появилось понимание рынка и тренда. Точки входа близки к идеальным.</li>
+              <li><span>Запрос</span> — стабильный профит ~10% к депозиту.</li>
+              <li><span>Итог</span> — за 3 месяца ~30% к депо, +$3.2K на тесте. Планирую переходить на $100K.</li>
+            </ul>
+
+            <figure class="testimonial__chart">
+              <img src="assets/img/evgeniy-2.png" alt="Cumulative PnL: рост до ~$2.5K за 3 месяца" loading="lazy">
+              <figcaption>Cumulative PnL · рост до ~$2.5K за 3 месяца</figcaption>
+            </figure>
           </li>
         </ul>
       </div>

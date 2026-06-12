@@ -575,4 +575,71 @@
 
   // Pre-render history so users can re-open the chat and continue.
   restore();
+
+  // --- Voice testimonial player -----------------------------------------
+
+  const initPlayer = (player) => {
+    const audio = player.querySelector("[data-audio]");
+    const btn = player.querySelector("[data-play]");
+    const wave = player.querySelector("[data-wave]");
+    const timeEl = player.querySelector("[data-time]");
+    if (!audio || !btn || !wave) return;
+
+    const BAR_COUNT = 38;
+    const bars = [];
+    wave.innerHTML = "";
+    for (let i = 0; i < BAR_COUNT; i++) {
+      const bar = document.createElement("span");
+      bar.className = "bar";
+      // Stable pseudo-random heights derived from index — no jitter on re-render.
+      const wobble = Math.sin(i * 0.7) * 22 + Math.sin(i * 1.9 + 1.3) * 14;
+      const h = Math.max(18, Math.min(96, 55 + wobble));
+      bar.style.height = h + "%";
+      wave.appendChild(bar);
+      bars.push(bar);
+    }
+
+    const fmt = (t) => {
+      if (!isFinite(t) || t < 0) t = 0;
+      const m = Math.floor(t / 60);
+      const s = Math.floor(t % 60);
+      return m + ":" + String(s).padStart(2, "0");
+    };
+
+    btn.addEventListener("click", () => {
+      if (audio.paused) {
+        document.querySelectorAll("[data-audio]").forEach((a) => {
+          if (a !== audio) a.pause();
+        });
+        audio.play().catch(() => {});
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener("play", () => player.classList.add("is-playing"));
+    audio.addEventListener("pause", () => player.classList.remove("is-playing"));
+    audio.addEventListener("ended", () => {
+      player.classList.remove("is-playing");
+      bars.forEach((b) => b.classList.remove("is-active"));
+      if (timeEl) timeEl.textContent = fmt(audio.duration);
+    });
+
+    audio.addEventListener("loadedmetadata", () => {
+      if (timeEl) timeEl.textContent = fmt(audio.duration);
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      const d = audio.duration || 0;
+      const c = audio.currentTime || 0;
+      const p = d ? c / d : 0;
+      const fillCount = Math.round(p * BAR_COUNT);
+      for (let i = 0; i < BAR_COUNT; i++) {
+        bars[i].classList.toggle("is-active", i < fillCount);
+      }
+      if (timeEl) timeEl.textContent = fmt(d - c);
+    });
+  };
+
+  document.querySelectorAll("[data-player]").forEach(initPlayer);
 })();
