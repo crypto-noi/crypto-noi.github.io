@@ -1369,42 +1369,64 @@ strong {
   color: #7c8595;
 }
 
-.testimonial__stats {
+.testimonial__result {
   margin: auto 0 0 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
   background: #ffffff;
   border: 1px solid rgba(20, 23, 31, 0.08);
-  border-radius: 12px;
-  overflow: hidden;
+  border-radius: 14px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.testimonial__stats > div {
-  padding: 16px 10px;
-  text-align: center;
-  border-right: 1px solid rgba(20, 23, 31, 0.06);
-}
-
-.testimonial__stats > div:last-child {
-  border-right: 0;
-}
-
-.testimonial__stats dt {
+.testimonial__result-head {
+  margin: 0;
   font-size: 11px;
   color: #6b7280;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 500;
-  margin: 0;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
-.testimonial__stats dd {
-  margin: 6px 0 0 0;
-  font-size: 18px;
+.testimonial__result-hero {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.testimonial__result-num {
+  font-size: 34px;
   font-weight: 700;
   color: #0e6b3c;
   font-variant-numeric: tabular-nums;
-  line-height: 1.1;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.testimonial__result-sub {
+  font-size: 14px;
+  color: #2c313d;
+  line-height: 1.4;
+}
+
+.testimonial__result-foot {
+  list-style: none;
+  padding: 14px 0 0 0;
+  margin: 0;
+  border-top: 1px solid rgba(20, 23, 31, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.testimonial__result-foot li span {
+  font-weight: 600;
+  color: #14171f;
 }
 
 /* Text testimonial bullets */
@@ -2156,9 +2178,9 @@ strong {
   .player__btn { width: 38px; height: 38px; }
   .player__wave { height: 28px; }
   .player__speed { padding: 3px 8px; font-size: 11px; }
-  .testimonial__stats > div { padding: 12px 6px; }
-  .testimonial__stats dd { font-size: 15px; }
-  .testimonial__stats dt { font-size: 10px; }
+  .testimonial__result { padding: 18px 20px; gap: 14px; }
+  .testimonial__result-num { font-size: 28px; }
+  .testimonial__result-sub { font-size: 13px; }
 
   .lessons__grid {
     grid-template-columns: 1fr;
