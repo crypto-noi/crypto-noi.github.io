@@ -1264,9 +1264,9 @@ strong {
 /* Audio player */
 .player {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   padding: 12px 14px 12px 12px;
   background: #ffffff;
   border: 1px solid rgba(20, 23, 31, 0.08);
@@ -1303,6 +1303,7 @@ strong {
   height: 32px;
   min-width: 0;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .player__wave .bar {
@@ -1311,10 +1312,36 @@ strong {
   border-radius: 2px;
   background: rgba(20, 23, 31, 0.16);
   transition: background 0.08s linear;
+  pointer-events: none;
 }
 
 .player__wave .bar.is-active {
   background: #2bb673;
+}
+
+.player__speed {
+  background: transparent;
+  border: 1px solid rgba(20, 23, 31, 0.16);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #14171f;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.player__speed:hover {
+  background: rgba(43, 182, 115, 0.08);
+  border-color: rgba(43, 182, 115, 0.45);
+}
+
+.player__speed:focus-visible {
+  outline: 2px solid #2bb673;
+  outline-offset: 2px;
 }
 
 .player__time {
@@ -1340,6 +1367,44 @@ strong {
   margin: 0;
   font-size: 13px;
   color: #7c8595;
+}
+
+.testimonial__stats {
+  margin: auto 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: #ffffff;
+  border: 1px solid rgba(20, 23, 31, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.testimonial__stats > div {
+  padding: 16px 10px;
+  text-align: center;
+  border-right: 1px solid rgba(20, 23, 31, 0.06);
+}
+
+.testimonial__stats > div:last-child {
+  border-right: 0;
+}
+
+.testimonial__stats dt {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  margin: 0;
+}
+
+.testimonial__stats dd {
+  margin: 6px 0 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0e6b3c;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
 }
 
 /* Text testimonial bullets */
@@ -2087,9 +2152,13 @@ strong {
   }
 
   .testimonial { padding: 22px; gap: 18px; }
-  .player { padding: 10px 12px; gap: 10px; }
+  .player { padding: 10px 12px; gap: 8px; }
   .player__btn { width: 38px; height: 38px; }
   .player__wave { height: 28px; }
+  .player__speed { padding: 3px 8px; font-size: 11px; }
+  .testimonial__stats > div { padding: 12px 6px; }
+  .testimonial__stats dd { font-size: 15px; }
+  .testimonial__stats dt { font-size: 10px; }
 
   .lessons__grid {
     grid-template-columns: 1fr;

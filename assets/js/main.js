@@ -578,11 +578,23 @@
 
   // --- Voice testimonial player -----------------------------------------
 
+  const SPEEDS = [
+    { rate: 1, label: "1×" },
+    { rate: 1.25, label: "1.25×" },
+    { rate: 1.5, label: "1.5×" },
+    { rate: 1.75, label: "1.75×" },
+    { rate: 2, label: "2×" },
+  ];
+  const DEFAULT_SPEED_IDX = 2; // 1.5× by default — the voice is slow
+
   const initPlayer = (player) => {
     const audio = player.querySelector("[data-audio]");
     const btn = player.querySelector("[data-play]");
     const wave = player.querySelector("[data-wave]");
     const timeEl = player.querySelector("[data-time]");
+    const speedBtn = player.querySelector("[data-speed]");
+    const card = player.closest(".testimonial");
+    const metaDurationEl = card && card.querySelector("[data-meta-duration]");
     if (!audio || !btn || !wave) return;
 
     const BAR_COUNT = 38;
@@ -591,7 +603,6 @@
     for (let i = 0; i < BAR_COUNT; i++) {
       const bar = document.createElement("span");
       bar.className = "bar";
-      // Stable pseudo-random heights derived from index — no jitter on re-render.
       const wobble = Math.sin(i * 0.7) * 22 + Math.sin(i * 1.9 + 1.3) * 14;
       const h = Math.max(18, Math.min(96, 55 + wobble));
       bar.style.height = h + "%";
@@ -606,6 +617,21 @@
       return m + ":" + String(s).padStart(2, "0");
     };
 
+    let speedIdx = DEFAULT_SPEED_IDX;
+    const applySpeed = () => {
+      audio.playbackRate = SPEEDS[speedIdx].rate;
+      if (speedBtn) speedBtn.textContent = SPEEDS[speedIdx].label;
+    };
+    applySpeed();
+
+    if (speedBtn) {
+      speedBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        speedIdx = (speedIdx + 1) % SPEEDS.length;
+        applySpeed();
+      });
+    }
+
     btn.addEventListener("click", () => {
       if (audio.paused) {
         document.querySelectorAll("[data-audio]").forEach((a) => {
@@ -617,6 +643,14 @@
       }
     });
 
+    wave.addEventListener("click", (e) => {
+      const d = audio.duration;
+      if (!isFinite(d) || d <= 0) return;
+      const rect = wave.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      audio.currentTime = ratio * d;
+    });
+
     audio.addEventListener("play", () => player.classList.add("is-playing"));
     audio.addEventListener("pause", () => player.classList.remove("is-playing"));
     audio.addEventListener("ended", () => {
@@ -626,7 +660,9 @@
     });
 
     audio.addEventListener("loadedmetadata", () => {
-      if (timeEl) timeEl.textContent = fmt(audio.duration);
+      const d = audio.duration;
+      if (timeEl) timeEl.textContent = fmt(d);
+      if (metaDurationEl) metaDurationEl.textContent = fmt(d);
     });
 
     audio.addEventListener("timeupdate", () => {
