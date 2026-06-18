@@ -1184,7 +1184,10 @@ strong {
   gap: 14px;
 }
 
-.result-card__media--1 { grid-template-columns: minmax(0, 360px); }
+.result-card__media--1 {
+  grid-template-columns: minmax(0, 360px);
+  justify-content: center;
+}
 .result-card__media--2 { grid-template-columns: 1fr 1fr; }
 .result-card__media--3 { grid-template-columns: 1fr 1fr 1fr; }
 
