@@ -113,16 +113,29 @@
       return p && typeof p.then === "function" ? p : Promise.resolve();
     };
 
-    // Prefer playing WITH sound; if the browser blocks it, fall back to muted
-    // autoplay and leave the prominent "Включить звук" prompt pulsing.
-    const start = () => {
+    // Browsers block unmuted autoplay without a user gesture — this is a
+    // platform policy that cannot be bypassed. Strategy: start muted (always
+    // allowed), then unmute on the very first interaction (scroll / click /
+    // touch / keydown / mousemove). Sound kicks in the moment the user moves
+    // the mouse or scrolls even one pixel — no button press required.
+    let soundUnlocked = false;
+    const unlockSound = () => {
+      if (soundUnlocked) return;
+      soundUnlocked = true;
       heroVideo.muted = false;
+      if (heroVideo.volume === 0) heroVideo.volume = 1;
+      syncSound();
+      ["click","touchstart","scroll","keydown","mousemove"].forEach(ev =>
+        window.removeEventListener(ev, unlockSound));
+    };
+
+    const start = () => {
+      heroVideo.muted = true;
       attempt()
         .then(() => { hideOverlay(); syncSound(); })
-        .catch(() => {
-          heroVideo.muted = true;
-          attempt().then(hideOverlay).catch(showOverlay).finally(syncSound);
-        });
+        .catch(showOverlay);
+      ["click","touchstart","scroll","keydown","mousemove"].forEach(ev =>
+        window.addEventListener(ev, unlockSound, { passive: true }));
     };
 
     heroVideo.addEventListener("play", hideOverlay);
@@ -133,12 +146,13 @@
       heroSoundBtn.addEventListener("click", () => {
         heroVideo.muted = !heroVideo.muted;
         if (!heroVideo.muted && heroVideo.volume === 0) heroVideo.volume = 1;
-        attempt().then(hideOverlay).catch(() => {});
+        soundUnlocked = !heroVideo.muted;
+        attempt().catch(() => {});
         syncSound();
       });
     }
 
-    // Manual play fallback: respect the current sound choice.
+    // Manual play fallback button.
     heroPlayBtn.addEventListener("click", () => {
       attempt().then(hideOverlay).catch(showOverlay).finally(syncSound);
     });
