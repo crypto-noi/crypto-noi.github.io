@@ -118,6 +118,9 @@
     // allowed), then unmute on the very first interaction (scroll / click /
     // touch / keydown / mousemove). Sound kicks in the moment the user moves
     // the mouse or scrolls even one pixel — no button press required.
+    let started = false;
+    const startOnce = () => { if (started) return; started = true; start(); };
+
     let soundUnlocked = false;
     const unlockSound = () => {
       if (soundUnlocked) return;
@@ -157,8 +160,13 @@
       attempt().then(hideOverlay).catch(showOverlay).finally(syncSound);
     });
 
-    if (heroVideo.readyState >= 2) start();
-    else heroVideo.addEventListener("loadeddata", start, { once: true });
+    // readyState 2 = HAVE_CURRENT_DATA, 3 = HAVE_FUTURE_DATA, 4 = HAVE_ENOUGH_DATA
+    if (heroVideo.readyState >= 2) {
+      startOnce();
+    } else {
+      heroVideo.addEventListener("loadeddata", startOnce, { once: true });
+      heroVideo.addEventListener("canplay", startOnce, { once: true });
+    }
 
     syncSound();
   }
