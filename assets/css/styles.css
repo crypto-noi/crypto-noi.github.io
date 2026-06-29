@@ -476,6 +476,50 @@ strong {
   color: var(--text-muted);
 }
 
+/* Hero offer block */
+.hero__offer {
+  margin-top: 26px;
+  padding: 22px 24px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(57, 255, 136, 0.28);
+  background:
+    linear-gradient(180deg, rgba(57, 255, 136, 0.08), rgba(14, 20, 48, 0.35)),
+    linear-gradient(180deg, rgba(14, 20, 48, 0.6), rgba(14, 20, 48, 0.2));
+  box-shadow: 0 0 50px -22px rgba(57, 255, 136, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  max-width: 560px;
+}
+
+.hero__offer-title {
+  margin: 0;
+  font-size: clamp(20px, 2.4vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.hero__offer-text {
+  margin: 10px 0 0;
+  font-size: clamp(14px, 1.3vw, 16px);
+  color: rgba(233, 237, 245, 0.85);
+  line-height: 1.55;
+}
+
+.hero__offer-text strong {
+  color: var(--neon);
+  font-weight: 700;
+}
+
+.hero__offer-cta {
+  margin-top: 18px;
+}
+
+.hero__offer .hero__hint {
+  margin-top: 12px;
+}
+
 .stats {
   list-style: none;
   padding: 0;
@@ -577,6 +621,56 @@ strong {
   margin-right: 8px;
   vertical-align: 1px;
   animation: pulse 1.8s ease-in-out infinite;
+}
+
+/* Prominent sound toggle */
+.hero__player-sound {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px 9px 11px;
+  border: 1px solid rgba(57, 255, 136, 0.55);
+  border-radius: 999px;
+  background: rgba(5, 7, 13, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--neon);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.hero__player-sound svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+.hero__player-sound:hover,
+.hero__player-sound:focus-visible {
+  transform: scale(1.04);
+  border-color: var(--neon);
+  outline: none;
+}
+
+/* Muted state: attention-grabbing so users know there is sound */
+.hero__player-sound.is-muted {
+  box-shadow: 0 0 0 6px rgba(57, 255, 136, 0.1), 0 10px 30px -10px rgba(57, 255, 136, 0.5);
+  animation: sound-pulse 2s ease-in-out infinite;
+}
+
+.hero__player-sound.is-muted .hero__player-sound-on { display: none; }
+.hero__player-sound:not(.is-muted) .hero__player-sound-off { display: none; }
+
+@keyframes sound-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(57, 255, 136, 0.08), 0 10px 30px -10px rgba(57, 255, 136, 0.45); }
+  50% { box-shadow: 0 0 0 9px rgba(57, 255, 136, 0.16), 0 12px 36px -10px rgba(57, 255, 136, 0.65); }
 }
 
 .hero__player-playbtn {
@@ -2272,6 +2366,20 @@ strong {
 
   .hero__copy .btn svg {
     display: none;
+  }
+
+  .hero__offer {
+    padding: 18px 18px 20px;
+  }
+
+  .hero__player-sound {
+    padding: 8px 12px 8px 10px;
+    font-size: 12px;
+  }
+
+  .hero__player-sound svg {
+    width: 18px;
+    height: 18px;
   }
 
   .problems {

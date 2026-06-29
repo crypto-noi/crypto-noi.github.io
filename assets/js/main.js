@@ -91,25 +91,62 @@
 
   const heroVideo = document.getElementById("hero-video");
   const heroPlayBtn = document.getElementById("hero-play-overlay");
+  const heroSoundBtn = document.getElementById("hero-sound");
 
   if (heroVideo && heroPlayBtn) {
     const showOverlay = () => { heroPlayBtn.hidden = false; };
     const hideOverlay = () => { heroPlayBtn.hidden = true; };
 
-    const tryPlay = () => {
+    const syncSound = () => {
+      if (!heroSoundBtn) return;
+      const muted = heroVideo.muted || heroVideo.volume === 0;
+      heroSoundBtn.classList.toggle("is-muted", muted);
+      heroSoundBtn.setAttribute("aria-pressed", String(!muted));
+      heroSoundBtn.setAttribute("aria-label", muted ? "Включить звук" : "Выключить звук");
+      const label = heroSoundBtn.querySelector(".hero__player-sound-label");
+      if (label) label.textContent = muted ? "Включить звук" : "Звук включён";
+    };
+
+    // Try to play; resolve tells us whether playback actually started.
+    const attempt = () => {
       const p = heroVideo.play();
-      if (p && typeof p.then === "function") p.then(hideOverlay).catch(showOverlay);
+      return p && typeof p.then === "function" ? p : Promise.resolve();
+    };
+
+    // Prefer playing WITH sound; if the browser blocks it, fall back to muted
+    // autoplay and leave the prominent "Включить звук" prompt pulsing.
+    const start = () => {
+      heroVideo.muted = false;
+      attempt()
+        .then(() => { hideOverlay(); syncSound(); })
+        .catch(() => {
+          heroVideo.muted = true;
+          attempt().then(hideOverlay).catch(showOverlay).finally(syncSound);
+        });
     };
 
     heroVideo.addEventListener("play", hideOverlay);
     heroVideo.addEventListener("playing", hideOverlay);
+    heroVideo.addEventListener("volumechange", syncSound);
+
+    if (heroSoundBtn) {
+      heroSoundBtn.addEventListener("click", () => {
+        heroVideo.muted = !heroVideo.muted;
+        if (!heroVideo.muted && heroVideo.volume === 0) heroVideo.volume = 1;
+        attempt().then(hideOverlay).catch(() => {});
+        syncSound();
+      });
+    }
+
+    // Manual play fallback: respect the current sound choice.
     heroPlayBtn.addEventListener("click", () => {
-      heroVideo.muted = true;
-      tryPlay();
+      attempt().then(hideOverlay).catch(showOverlay).finally(syncSound);
     });
 
-    if (heroVideo.readyState >= 2) tryPlay();
-    else heroVideo.addEventListener("loadeddata", tryPlay, { once: true });
+    if (heroVideo.readyState >= 2) start();
+    else heroVideo.addEventListener("loadeddata", start, { once: true });
+
+    syncSound();
   }
 
   // --- Footer year -------------------------------------------------------
