@@ -113,13 +113,13 @@
       return p && typeof p.then === "function" ? p : Promise.resolve();
     };
 
-    // Browsers block unmuted autoplay without a user gesture — this is a
-    // platform policy that cannot be bypassed. Strategy: start muted (always
-    // allowed), then unmute on the very first interaction (scroll / click /
-    // touch / keydown / mousemove). Sound kicks in the moment the user moves
-    // the mouse or scrolls even one pixel — no button press required.
     let started = false;
     const startOnce = () => { if (started) return; started = true; start(); };
+
+    // Only click / touchstart / keydown count as "user activation" in browsers.
+    // mousemove and scroll do NOT grant activation, so unmuting on those events
+    // causes the browser to pause the video — that was the bug.
+    const UNLOCK_EVENTS = ["click", "touchstart", "keydown"];
 
     let soundUnlocked = false;
     const unlockSound = () => {
@@ -127,9 +127,10 @@
       soundUnlocked = true;
       heroVideo.muted = false;
       if (heroVideo.volume === 0) heroVideo.volume = 1;
+      // Re-call play() — if the browser paused after unmute, this restarts it.
+      attempt().then(hideOverlay).catch(() => {});
       syncSound();
-      ["click","touchstart","scroll","keydown","mousemove"].forEach(ev =>
-        window.removeEventListener(ev, unlockSound));
+      UNLOCK_EVENTS.forEach(ev => window.removeEventListener(ev, unlockSound));
     };
 
     const start = () => {
@@ -137,7 +138,7 @@
       attempt()
         .then(() => { hideOverlay(); syncSound(); })
         .catch(showOverlay);
-      ["click","touchstart","scroll","keydown","mousemove"].forEach(ev =>
+      UNLOCK_EVENTS.forEach(ev =>
         window.addEventListener(ev, unlockSound, { passive: true }));
     };
 
