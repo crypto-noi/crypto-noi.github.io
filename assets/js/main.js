@@ -134,12 +134,21 @@
     };
 
     const start = () => {
-      heroVideo.muted = true;
+      // Try unmuted first — works for returning visitors with high Media
+      // Engagement Index. If the browser blocks it, fall back to muted.
+      heroVideo.muted = false;
       attempt()
-        .then(() => { hideOverlay(); syncSound(); })
-        .catch(showOverlay);
-      UNLOCK_EVENTS.forEach(ev =>
-        window.addEventListener(ev, unlockSound, { passive: true }));
+        .then(() => {
+          soundUnlocked = true;
+          hideOverlay();
+          syncSound();
+        })
+        .catch(() => {
+          heroVideo.muted = true;
+          attempt().then(hideOverlay).catch(showOverlay).finally(syncSound);
+          UNLOCK_EVENTS.forEach(ev =>
+            window.addEventListener(ev, unlockSound, { passive: true }));
+        });
     };
 
     heroVideo.addEventListener("play", hideOverlay);
